@@ -10,6 +10,7 @@
  * - GLM TTS (https://docs.bigmodel.cn/cn/guide/models/sound-and-video/glm-tts)
  * - Qwen TTS (https://bailian.console.aliyun.com/)
  * - Doubao TTS (https://www.volcengine.com/docs/6561/1257543)
+ * - Minimax TTS (https://platform.minimax.io/)
  * - Browser Native TTS (Web Speech API, client-side only)
  *
  * Currently Supported ASR Providers:
@@ -85,7 +86,8 @@ export type TTSProviderId =
   | 'qwen-tts'
   | 'doubao-tts'
   | 'elevenlabs-tts'
-  | 'browser-native-tts';
+  | 'browser-native-tts'
+  | 'minimax-tts';
 // Add new TTS providers below (uncomment and modify):
 // | 'fish-audio-tts'
 // | 'cartesia-tts'

@@ -155,6 +155,9 @@ export async function generateTTS(
     case 'elevenlabs-tts':
       return await generateElevenLabsTTS(config, text);
 
+    case 'minimax-tts':
+      return await generateMinimaxTTS(config, text);
+
     case 'browser-native-tts':
       throw new Error(
         'Browser Native TTS must be handled client-side using Web Speech API. This provider cannot be used on the server.',
@@ -525,4 +528,87 @@ function escapeXml(text: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
+}
+
+/**
+ * Minimax TTS implementation (MiniMax T2A API)
+ * API format: app_id:api_key - need to split on ":" to get both parts
+ */
+async function generateMinimaxTTS(
+  config: TTSModelConfig,
+  text: string,
+): Promise<TTSGenerationResult> {
+  const colonIdx = (config.apiKey || '').indexOf(':');
+  if (colonIdx <= 0) {
+    throw new Error(
+      'Minimax TTS requires API key in format "appId:apiKey". Get both from the MiniMax console.',
+    );
+  }
+  const appId = config.apiKey!.slice(0, colonIdx);
+  const apiKey = config.apiKey!.slice(colonIdx + 1);
+
+  const baseUrl = config.baseUrl || TTS_PROVIDERS['minimax-tts'].defaultBaseUrl;
+
+  const requestedFormat = config.format || 'mp3';
+  const formatMap: Record<string, string> = {
+    mp3: 'mp3',
+    wav: 'wav',
+  };
+  const outputFormat = formatMap[requestedFormat] || 'mp3';
+
+  const response = await fetch(`${baseUrl}/t2a_v2`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+      'X-App-Id': appId,
+    },
+    body: JSON.stringify({
+      model: 'MiniMax-T2A',
+      text,
+      voice_setting: {
+        voice_id: config.voice,
+      },
+      audio_setting: {
+        sample_rate: 32000,
+        format: outputFormat,
+        speed: config.speed || 1.0,
+        volume: 1.0,
+        bitrate: 128000,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => response.statusText);
+    throw new Error(`Minimax TTS API error (${response.status}): ${errorText}`);
+  }
+
+  const data = await response.json();
+
+  if (data.code !== 0 || !data.data) {
+    const errorMsg = data.message || 'Unknown error';
+    throw new Error(`Minimax TTS error: ${errorMsg} (code: ${data.code})`);
+  }
+
+  const audioData = data.data;
+  let audioBytes: Uint8Array;
+
+  if (audioData.audio) {
+    audioBytes = new Uint8Array(Buffer.from(audioData.audio, 'base64'));
+  } else if (audioData.audio_url) {
+    const audioResponse = await fetch(audioData.audio_url);
+    if (!audioResponse.ok) {
+      throw new Error(`Failed to download audio from URL: ${audioResponse.statusText}`);
+    }
+    const arrayBuffer = await audioResponse.arrayBuffer();
+    audioBytes = new Uint8Array(arrayBuffer);
+  } else {
+    throw new Error('Minimax TTS response missing audio data');
+  }
+
+  return {
+    audio: audioBytes,
+    format: outputFormat,
+  };
 }

@@ -767,6 +767,74 @@ export const TTS_PROVIDERS: Record<TTSProviderId, TTSProviderConfig> = {
     speedRange: { min: 0.7, max: 1.2, default: 1.0 },
   },
 
+  'minimax-tts': {
+    id: 'minimax-tts',
+    name: 'Minimax TTS',
+    requiresApiKey: true,
+    defaultBaseUrl: 'https://api.minimax.chat/v1',
+    icon: '/logos/minimax.svg',
+    voices: [
+      // Chinese voices
+      {
+        id: 'male-qn-qingse',
+        name: '青涩青年 (QN-QingSe)',
+        language: 'zh-CN',
+        gender: 'male',
+      },
+      {
+        id: 'male-qn-jingying',
+        name: '精英青年 (QN-JingYing)',
+        language: 'zh-CN',
+        gender: 'male',
+      },
+      {
+        id: 'male-qn-badao',
+        name: '沉稳大叔 (QN-BaDao)',
+        language: 'zh-CN',
+        gender: 'male',
+      },
+      {
+        id: 'female-shaonv',
+        name: '活泼少女 (Female-Shaonv)',
+        language: 'zh-CN',
+        gender: 'female',
+      },
+      {
+        id: 'female-yujie',
+        name: '温柔御姐 (Female-YuJie)',
+        language: 'zh-CN',
+        gender: 'female',
+      },
+      // English voices
+      {
+        id: 'male-qn-uk-jack',
+        name: '英音Jack (UK)',
+        language: 'en-US',
+        gender: 'male',
+      },
+      {
+        id: 'female-qn-uk-susan',
+        name: '英音Susan (UK)',
+        language: 'en-US',
+        gender: 'female',
+      },
+      {
+        id: 'male-qn-us-james',
+        name: '美音James (US)',
+        language: 'en-US',
+        gender: 'male',
+      },
+      {
+        id: 'female-qn-us-sarah',
+        name: '美音Sarah (US)',
+        language: 'en-US',
+        gender: 'female',
+      },
+    ],
+    supportedFormats: ['mp3', 'wav'],
+    speedRange: { min: 0.5, max: 2.0, default: 1.0 },
+  },
+
   'browser-native-tts': {
     id: 'browser-native-tts',
     name: '浏览器原生 (Web Speech API)',
@@ -996,6 +1064,7 @@ export const DEFAULT_TTS_VOICES: Record<TTSProviderId, string> = {
   'qwen-tts': 'Cherry',
   'doubao-tts': 'zh_female_vv_uranus_bigtts',
   'elevenlabs-tts': 'EXAVITQu4vr4xnSDxMaL',
+  'minimax-tts': 'male-qn-qingse',
   'browser-native-tts': 'default',
 };
 

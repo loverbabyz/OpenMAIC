@@ -123,6 +123,7 @@ function getTTSProviderName(providerId: TTSProviderId, t: (key: string) => strin
     'qwen-tts': t('settings.providerQwenTTS'),
     'doubao-tts': t('settings.providerDoubaoTTS'),
     'elevenlabs-tts': t('settings.providerElevenLabsTTS'),
+    'minimax-tts': t('settings.providerMinimaxTTS'),
     'browser-native-tts': t('settings.providerBrowserNativeTTS'),
   };
   return names[providerId];
@@ -143,6 +144,7 @@ const IMAGE_PROVIDER_NAMES: Record<ImageProviderId, string> = {
   'qwen-image': 'providerQwenImage',
   'nano-banana': 'providerNanoBanana',
   'grok-image': 'providerGrokImage',
+  'minimax-image': 'providerMinimaxImage',
 };
 
 const IMAGE_PROVIDER_ICONS: Record<ImageProviderId, string> = {
@@ -150,6 +152,7 @@ const IMAGE_PROVIDER_ICONS: Record<ImageProviderId, string> = {
   'qwen-image': '/logos/bailian.svg',
   'nano-banana': '/logos/gemini.svg',
   'grok-image': '/logos/grok.svg',
+  'minimax-image': '/logos/minimax.svg',
 };
 
 const VIDEO_PROVIDER_NAMES: Record<VideoProviderId, string> = {

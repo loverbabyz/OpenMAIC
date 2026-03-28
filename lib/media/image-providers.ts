@@ -13,6 +13,10 @@ import { generateWithSeedream, testSeedreamConnectivity } from './adapters/seedr
 import { generateWithQwenImage, testQwenImageConnectivity } from './adapters/qwen-image-adapter';
 import { generateWithNanoBanana, testNanoBananaConnectivity } from './adapters/nano-banana-adapter';
 import { generateWithGrokImage, testGrokImageConnectivity } from './adapters/grok-image-adapter';
+import {
+  generateWithMinimaxImage,
+  testMinimaxImageConnectivity,
+} from './adapters/minimax-image-adapter';
 
 export const IMAGE_PROVIDERS: Record<ImageProviderId, ImageProviderConfig> = {
   seedream: {
@@ -78,6 +82,17 @@ export const IMAGE_PROVIDERS: Record<ImageProviderId, ImageProviderConfig> = {
     ],
     supportedAspectRatios: ['16:9', '4:3', '1:1', '9:16'],
   },
+  'minimax-image': {
+    id: 'minimax-image',
+    name: 'Minimax Image',
+    requiresApiKey: true,
+    defaultBaseUrl: 'https://api.minimax.chat/v1',
+    models: [
+      { id: 'MiniMax-Image-01', name: 'MiniMax Image 01' },
+      { id: 'MiniMax-Image-01-HD', name: 'MiniMax Image 01 HD' },
+    ],
+    supportedAspectRatios: ['16:9', '4:3', '1:1', '9:16'],
+  },
 };
 
 export async function testImageConnectivity(
@@ -92,6 +107,8 @@ export async function testImageConnectivity(
       return testNanoBananaConnectivity(config);
     case 'grok-image':
       return testGrokImageConnectivity(config);
+    case 'minimax-image':
+      return testMinimaxImageConnectivity(config);
     default:
       return {
         success: false,
@@ -113,6 +130,8 @@ export async function generateImage(
       return generateWithNanoBanana(config, options);
     case 'grok-image':
       return generateWithGrokImage(config, options);
+    case 'minimax-image':
+      return generateWithMinimaxImage(config, options);
     default:
       throw new Error(`Unsupported image provider: ${config.providerId}`);
   }
